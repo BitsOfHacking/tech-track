@@ -120,11 +120,10 @@ function parseCoreRequirement(
   // tbody > tr (0) > th (0) > div (0) > div (1) > p (0)
   let parsedCourses: (ICourse | ICourseGroup)[] = [];
   let currentGroup: ICourseGroup | null = null;
-  let currentGroupName = "";
   let current = 0;
   let desired = 0;
 
-  let currentCoreType = defaultCoreType || CoreType.CORE_UNKNOWN;
+  let currentCoreType = defaultCoreType;
 
   coreRequirementList.forEach((node, index) => {
     const labelNode: ChildNode =
@@ -170,7 +169,6 @@ function parseCoreRequirement(
           name: label,
           courses: [],
         };
-        currentGroupName = label;
         current = 0;
         desired = parseInt(rowspan);
       }
