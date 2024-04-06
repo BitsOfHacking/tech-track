@@ -1,6 +1,7 @@
 import mongoose, { Types, Document, Schema } from "mongoose";
 import { IUser } from "./User";
 export interface IPlan extends Document {
+    _id: Types.ObjectId;
     name: string;
     semesters: string[];
     user: Types.ObjectId | IUser;
