@@ -3,6 +3,7 @@ interface course {
   name: string,
   number: string,
   credits: number,
+  completed: boolean,
 }
 
 export interface category {

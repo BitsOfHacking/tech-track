@@ -2,6 +2,7 @@ import Button from "@/components/Button";
 import Course from "@/components/Course";
 import Semester from "@/components/Semester";
 import { category } from "@/types/courseTypes";
+import Sidebar from "@/components/Sidebar";
     
 export default function Home() {
   const probability: category = {
@@ -11,24 +12,28 @@ export default function Home() {
       {
         number: "MATH 3670",
         name: "Statistics and Applns",
-        credits: 3
+        credits: 3,
+        completed: false
       },
       {
         number: "ISYE 3770",
         name: "Statistics and Applications",
-        credits: 3
+        credits: 3,
+        completed: true
       }
     ],
     selectedCourse: 0,
   };
 
   const english: category = {
+    category: "Core A",
     number: 0,
     courses: [
       {
         number: "ENGL 1102",
         name: "English Composition 2",
-        credits: 3
+        credits: 3,
+        completed: true
       },
     ],
     selectedCourse: 0,
@@ -53,6 +58,7 @@ export default function Home() {
   return (
     // <div className={`flex min-h-screen flex-col items-center justify-between p-24`} >
     <div className="flex h-screen bg-background gap-4 justify-center items-center">
+      <Sidebar courses={courses} />
       <Semester title={"Fall 24"} courses={courses} />
       <Semester title={"Spring 24"} courses={courses} />
       <Semester title={"Spring 24"} courses={courses} />
