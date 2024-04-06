@@ -4,7 +4,13 @@ import { promises as fs } from "fs";
 import parse, { HTMLElement, TextNode } from "node-html-parser";
 import { CoreType, ICourse } from "@/server/db/models/Course";
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+type Data = {
+  majorRequirements: (ICourse | ICourseGroup)[],
+  coreRequirements: (ICourse | ICourseGroup)[],
+  electiveRequirements: (ICourse | ICourseGroup)[],
+}
+
+export default function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   fs.readFile(process.cwd() + "/public/degreeaudit.html", {
     encoding: "utf-8",
   }).then((data) => {
@@ -91,13 +97,13 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
     if (sections["core-requirements"]) {
       res.status(200).json({
-        "major-requirements": majorRequirements,
-        "core-requirements": coreRequirements,
-        "elective-requirements": electives,
+        majorRequirements: majorRequirements,
+        coreRequirements: coreRequirements,
+        electiveRequirements: electives,
       });
+    } else {
+      res.status(400);
     }
-
-    res.status(200).json({ data: { a: "wadaw" } });
   });
 }
 
