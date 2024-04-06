@@ -37,7 +37,7 @@ export default function Course({ category }: CourseProps) {
             <div className="flex flex-col gap-2">
               {category.courses.map((course: course, index: number) => {
                 return (
-                  <div
+                  <div key={course.number}
                     className="flex justify-between align-center bg-secondary-background rounded-[10px] p-2  cursor-default"
                     onClick={(event) => {
                       event.stopPropagation();

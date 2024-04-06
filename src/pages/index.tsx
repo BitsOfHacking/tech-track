@@ -26,7 +26,6 @@ export default function Home() {
   };
 
   const english: category = {
-    category: "Core A",
     number: 0,
     courses: [
       {
@@ -46,7 +45,8 @@ export default function Home() {
       {
         number: "FREE",
         name: "Free Elective",
-        credits: -1
+        credits: -1,
+        completed: false
       }
     ],
     selectedCourse: -1,
