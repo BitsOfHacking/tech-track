@@ -4,7 +4,7 @@ import Semester from "@/components/Semester";
 import { category } from "@/types/courseTypes";
 import Sidebar from "@/components/Sidebar";
 
-import { Inter as FontSans } from "next/font/google";
+import { Nunito as FontSans } from "next/font/google";
 import { cn } from "@/lib/utils";
 
 const fontSans = FontSans({

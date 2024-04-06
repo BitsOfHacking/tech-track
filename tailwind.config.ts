@@ -25,8 +25,8 @@ const config = {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
+        background: "var(--background)",
+        foreground: "var(--foreground)",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
@@ -55,13 +55,17 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        "secondary-background": "#E7E7E7",
-        "primary-color": "#CCCCCC",
+        "secondary-background": "#ffffff",
+        "primary-color": "#353a57",
         "secondary-color": "#D9D9D9",
-        "primary-text": "#000000",
+        "primary-text": "#ffffff",
         "secondary-text": "#6C6C6C",
         "primary-button": "#FFF000",
         "secondary-button": "#CCF0F0",
+        "semester-header-background": "#748bf1",
+      },
+      boxShadow: {
+        'semester': '0px 4px 12px 0px rgba(53, 58, 87, 0.50)'
       },
       borderRadius: {
         lg: "var(--radius)",
