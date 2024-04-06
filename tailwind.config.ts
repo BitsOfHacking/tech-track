@@ -59,7 +59,7 @@ const config = {
         "primary-color": "#353a57",
         "secondary-color": "#D9D9D9",
         "primary-text": "#ffffff",
-        "secondary-text": "#6C6C6C",
+        "secondary-text": "#c2c4cc",
         "primary-button": "#FFF000",
         "secondary-button": "#CCF0F0",
         "semester-header-background": "#748bf1",
