@@ -34,7 +34,21 @@ export default function Home() {
     selectedCourse: 0,
   };
 
-  const courses: category[] = [ english, probability ];
+  const free: category = {
+    category: "Free Elective",
+    number: 0,
+    courses: [
+      {
+        number: "FREE",
+        name: "Free Elective",
+        credits: -1
+      }
+    ],
+    selectedCourse: -1,
+    freeElective: true,
+  };
+
+  const courses: category[] = [ english, probability, free ];
 
   return (
     // <div className={`flex min-h-screen flex-col items-center justify-between p-24`} >
