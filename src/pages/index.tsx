@@ -1,6 +1,5 @@
-import Button from "@/components/Button";
-import Course from "@/components/Course";
 import Semester from "@/components/Semester";
+import PlusButton from "@/components/PlusButton";
 import { category } from "@/types/courseTypes";
 import Sidebar from "@/components/Sidebar";
 
@@ -69,6 +68,7 @@ export default function Home() {
     >
       <Sidebar courses={courses} />
       <Semester title={"Fall 24"} courses={courses} />
+      <PlusButton small={true} onClick={() => { console.log("amongus") }}/>
       <Semester title={"Spring 24"} courses={courses} />
       <Semester title={"Spring 24"} courses={courses} />
     </div>

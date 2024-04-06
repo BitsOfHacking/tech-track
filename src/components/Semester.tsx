@@ -1,6 +1,7 @@
+import { useEffect, useState } from "react";
 import { category } from "@/types/courseTypes";
 import Course from "./Course";
-import { useEffect, useState } from "react";
+import PlusButton from "./PlusButton";
 
 interface SemesterProps {
   title: string,
@@ -33,6 +34,7 @@ export default function Semester({ title, courses }: SemesterProps) {
         {courses.map((course: category) => (
           <Course key={course.number} category={course} />
         ))}
+        <PlusButton onClick={() => { console.log("amongus") }}/>
         <div className="flex self-end px-4 py-2 absolute bottom-0">
           {credits} Credits
         </div>
