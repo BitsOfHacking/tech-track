@@ -19,7 +19,7 @@ export default function Home() {
         credits: 3
       }
     ],
-    selectedCourse: "MATH 3670"
+    selectedCourse: 0,
   };
 
   const english: category = {
@@ -31,6 +31,7 @@ export default function Home() {
         credits: 3
       },
     ],
+    selectedCourse: 0,
   };
 
   const courses: category[] = [ english, probability ];
