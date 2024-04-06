@@ -2,8 +2,8 @@ import Button from "@/components/Button";
 import Course from "@/components/Course";
 import Semester from "@/components/Semester";
 import { category } from "@/types/courseTypes";
-    
-export default function Home() {
+
+export default function Testing() {
   const probability: category = {
     category: "Probability and Statistics",
     number: 2,
@@ -36,11 +36,14 @@ export default function Home() {
   const courses: category[] = [ english, probability ];
 
   return (
-    // <div className={`flex min-h-screen flex-col items-center justify-between p-24`} >
-    <div className="flex h-screen bg-background gap-4 justify-center items-center">
-      <Semester title={"Fall 24"} courses={courses} />
-      <Semester title={"Spring 24"} courses={courses} />
-      <Semester title={"Spring 24"} courses={courses} />
+    <div className="h-screen bg-background">
+      <div>hey there</div>
+      <Button type="plus" onClick={() => console.log("amongus")} />
+      <Button type="primary" text="lol" onClick={() => console.log("amongus")} />
+      <Button type="secondary" text="lol" onClick={() => console.log("amongus")} />
+      <Course category={english} />
+      <Course category={probability} />
+      <Semester courses={courses} />
     </div>
-  );
+  )
 }
