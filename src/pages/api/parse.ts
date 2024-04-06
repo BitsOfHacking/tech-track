@@ -112,12 +112,6 @@ interface ICourseGroup {
   courses: ICourse[];
 }
 
-interface IInsufficientCourse {
-  title: string;
-  coursesNeeded: string;
-  core: CoreType;
-}
-
 function parseCoreRequirement(
   coreRequirementList: Node[],
   defaultCoreType: CoreType
