@@ -2,11 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { promises as fs } from "fs";
 import parse, { HTMLElement, TextNode } from "node-html-parser";
-import { CoreType } from "@/server/db/models/Course";
-
-type Data = {
-  name: string;
-};
+import { CoreType, ICourse } from "@/server/db/models/Course";
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   fs.readFile(process.cwd() + "/public/degreeaudit.html", {
@@ -83,45 +79,58 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         }
       });
 
+    const majorRequirements = parseSection(
+      sections["major-requirements"],
+      CoreType.MAJOR_REQUIREMENTS
+    );
+    const coreRequirements = parseSection(sections["core-requirements"]);
+    const electives = parseSection(
+      sections["electives"],
+      CoreType.MAJOR_ELECTIVES
+    );
+
     if (sections["core-requirements"]) {
-      res
-        .status(200)
-        .json({ data: parseCoreRequirement(sections["core-requirements"]) });
+      res.status(200).json({
+        "major-requirements": majorRequirements,
+        "core-requirements": coreRequirements,
+        "elective-requirements": electives,
+      });
     }
 
     res.status(200).json({ data: { a: "wadaw" } });
   });
 }
 
-type CoreRequirementElement = {
-  label: string;
-  courseId: string;
-  courseTitle: string;
-};
+function parseSection(section: Node[], defaultCoreType?: CoreType) {
+  defaultCoreType = defaultCoreType || CoreType.CORE_UNKNOWN;
 
-function parseCoreRequirement(coreRequirementList: Node[]) {
+  return parseCoreRequirement(section, defaultCoreType);
+}
+
+interface ICourseGroup {
+  name: string;
+  courses: ICourse[];
+}
+
+interface IInsufficientCourse {
+  title: string;
+  coursesNeeded: string;
+  core: CoreType;
+}
+
+function parseCoreRequirement(
+  coreRequirementList: Node[],
+  defaultCoreType: CoreType
+) {
   // First node will be an icon and the label
   // tbody > tr (0) > th (0) > div (0) > div (1) > p (0)
-  let parsedCourses: any = [];
-
-  let currentGroup:
-    | (
-        | {
-            courseName: string | null;
-            coursesNeeded: string | null;
-            courseID?: undefined;
-          }
-        | {
-            courseName: string | null;
-            courseID: string | null;
-            coursesNeeded?: undefined;
-          }
-      )[]
-    | null = null;
+  let parsedCourses: (ICourse | ICourseGroup)[] = [];
+  let currentGroup: ICourseGroup | null = null;
+  let currentGroupName = "";
   let current = 0;
   let desired = 0;
 
-  let currentCoreType = CoreType.CORE_UNKNOWN;
+  let currentCoreType = defaultCoreType || CoreType.CORE_UNKNOWN;
 
   coreRequirementList.forEach((node, index) => {
     const labelNode: ChildNode =
@@ -152,20 +161,22 @@ function parseCoreRequirement(coreRequirementList: Node[]) {
     let completed = false;
 
     if (labelNode && labelNode.textContent) {
-      completed = labelNode.textContent?.includes('is complete');
-
+      completed = labelNode.textContent?.includes("is complete");
     } else {
       if (!label) {
         if (currentGroup === null) return;
       }
     }
 
-
     if (node instanceof HTMLElement) {
       let rowspan = node.querySelector("th")?.attributes["rowspan"];
 
       if (rowspan !== undefined && parseInt(rowspan) > 1) {
-        currentGroup = [];
+        currentGroup = {
+          name: label,
+          courses: [],
+        };
+        currentGroupName = label;
         current = 0;
         desired = parseInt(rowspan);
       }
@@ -191,13 +202,12 @@ function parseCoreRequirement(coreRequirementList: Node[]) {
 
       newCourse = {
         title: label,
-        coursesNeeded: classesNeeded?.trim(),
+        coursesNeeded: classesNeeded?.trim() || "",
         core: currentCoreType,
       };
     } else {
       const split = course?.trim().split(" ");
 
-      
       let credits = -1;
 
       if (node.childNodes[label ? 4 : 3]) {
@@ -208,11 +218,15 @@ function parseCoreRequirement(coreRequirementList: Node[]) {
             creditNode.textContent.replaceAll("(", "").replaceAll(")", "")
           );
         }
-  
       }
 
       if (credits === -1) {
         return;
+      }
+
+      // Attempt to grab label if nested
+      if (!label || (currentGroup !== null && current === 0)) {
+        label = node.childNodes[1].childNodes[0].textContent || "";
       }
 
       newCourse = {
@@ -220,21 +234,21 @@ function parseCoreRequirement(coreRequirementList: Node[]) {
         topic: split ? split[0] : "INVALID",
         number: split ? parseInt(split[1]) : -1,
         credits: credits,
-        core: [ currentCoreType ],
-        completed: completed
+        core: [currentCoreType],
+        completed: completed,
       };
     }
 
     if (currentGroup !== null) {
-      currentGroup.push(newCourse);
+      currentGroup.courses.push(newCourse);
       current++;
 
       if (current === desired - 1) {
         current = 0;
         desired = 0;
 
-        if (currentGroup.length === 1) {
-          parsedCourses.push(currentGroup[0]);
+        if (currentGroup.courses.length === 1) {
+          parsedCourses.push(currentGroup.courses[0]);
         } else {
           parsedCourses.push(currentGroup);
         }
