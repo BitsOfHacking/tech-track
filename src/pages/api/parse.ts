@@ -149,9 +149,17 @@ function parseCoreRequirement(coreRequirementList: Node[]) {
       }
     });
 
-    if (!label) {
-      if (currentGroup === null) return;
+    let completed = false;
+
+    if (labelNode && labelNode.textContent) {
+      completed = labelNode.textContent?.includes('is complete');
+
+    } else {
+      if (!label) {
+        if (currentGroup === null) return;
+      }
     }
+
 
     if (node instanceof HTMLElement) {
       let rowspan = node.querySelector("th")?.attributes["rowspan"];
@@ -183,17 +191,37 @@ function parseCoreRequirement(coreRequirementList: Node[]) {
 
       newCourse = {
         title: label,
-        coursesNeeded: classesNeeded,
+        coursesNeeded: classesNeeded?.trim(),
         core: currentCoreType,
       };
     } else {
       const split = course?.trim().split(" ");
 
+      
+      let credits = -1;
+
+      if (node.childNodes[label ? 4 : 3]) {
+        const creditNode = node.childNodes[label ? 4 : 3].childNodes[0];
+
+        if (creditNode && creditNode.textContent) {
+          credits = parseInt(
+            creditNode.textContent.replaceAll("(", "").replaceAll(")", "")
+          );
+        }
+  
+      }
+
+      if (credits === -1) {
+        return;
+      }
+
       newCourse = {
         title: label,
         topic: split ? split[0] : "INVALID",
         number: split ? parseInt(split[1]) : -1,
-        core: currentCoreType,
+        credits: credits,
+        core: [ currentCoreType ],
+        completed: completed
       };
     }
 
