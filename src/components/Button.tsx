@@ -12,7 +12,7 @@ export default function Button({ type, text, onClick }: ButtonProps) {
       className={`
         ${type === "primary" ? "bg-primary-button" : "bg-secondary-button"}
         border rounded-[10px] px-4 py-2`}
-      onClick={onClick} 
+      onClick={(e) => e.stopPropagation()} 
     >
       {type === "plus" ? 
         <div className="h-4 w-4"><PlusIcon /></div>
