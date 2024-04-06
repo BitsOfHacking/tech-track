@@ -17,7 +17,7 @@ const config: Config = {
         "background": "#494949",
         "secondary-background": "#E7E7E7",
         "primary-color": "#CCCCCC",
-        "course-list-item": "#D9D9D9",
+        "secondary-color": "#D9D9D9",
         "primary-button": "#FFF000",
         "secondary-button": "#CCF0F0",
       }

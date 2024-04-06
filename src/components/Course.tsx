@@ -8,32 +8,33 @@ interface CourseProps {
 export default function Course({ category }: CourseProps) {
   return (
     <button
-      className={`bg-primary-color border rounded-[10px] w-44 h-24`}
+      className={`bg-primary-color rounded-[10px] w-44 min-h-[52px] course-shadow p-2`}
     >
-      {category.number === 0 ?
+      {category.category ?
         <div>
-          {category.courses[0].number}...{category.courses[0].credits}
+          <div className="mb-2">
+            {category.category}
+          </div>
+          <div className="flex flex-col gap-2">
+            {category.courses.map((course) => {
+              return (
+                <div className="flex justify-center align-center bg-secondary-background rounded-[10px] gap-2 py-2">
+                  <div className="flex h-6 w-6 bg-secondary-color  border-2 border-primary-color rounded-full justify-center items-start">
+                    {category.selectedCourse === course.number ?
+                      <div className="h-6 w-6 stroke-background stroke-2">
+                        <CheckIcon />
+                      </div>
+                    : null }
+                  </div>
+                  {course.number}
+                </div>
+              )
+            })}
+          </div>
         </div>
         :
         <div>
-          {category.category}
-          <div>
-            Choose {category.number}
-          </div>
-          {category.courses.map((course) => {
-            return (
-              <div className="flex justify-center align-center">
-                <div className="h-6 w-6 bg-primary-button">
-                  {category.selectedCourse === course.number ?
-                    <div className="h-5 w-5 relative">
-                      <CheckIcon />
-                    </div>
-                  : null }
-                </div>
-                {course.number}
-              </div>
-            )
-          })}
+          {category["courses"][0]["number"]}...{category["courses"][0]["credits"]}
         </div>
       }
     </button>
