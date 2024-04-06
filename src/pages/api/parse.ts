@@ -2,6 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { promises as fs } from "fs";
 import parse, { HTMLElement, TextNode } from "node-html-parser";
+import { CoreType } from "@/server/db/models/Course";
 
 type Data = {
   name: string;
@@ -18,7 +19,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
           "base",
           "br",
           "col",
-    // console.log(data);
           "embed",
           "hr",
           "img",
@@ -72,11 +72,11 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
           if (name !== null && table !== null) {
             const body = table.lastChild!;
 
-            let properties = [];
+            let properties: any[] = [];
 
-            for (const row of body.childNodes) {
-              properties.push(row);
-            }
+            body.childNodes.forEach((bodyChildNode) =>
+              properties.push(bodyChildNode)
+            );
 
             sections[name as string] = properties;
           }
@@ -91,16 +91,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
     res.status(200).json({ data: { a: "wadaw" } });
   });
-}
-
-enum CoreArea {
-  A_ESSENTIAL_SKILLS,
-  B_INSTITUTIONAL_OPTIONS,
-  C_HUMANITIES,
-  D_SCIENCE_MATH_TECH,
-  E_SOCIAL_SCIENCES,
-  F_COURSES_RELATED_TO_MAJOR,
-  ETHICS,
 }
 
 type CoreRequirementElement = {
@@ -131,11 +121,27 @@ function parseCoreRequirement(coreRequirementList: Node[]) {
   let current = 0;
   let desired = 0;
 
+  let currentCoreType = CoreType.CORE_UNKNOWN;
+
   coreRequirementList.forEach((node, index) => {
     const labelNode: ChildNode =
       node?.childNodes[0]?.childNodes[0]?.childNodes[1]?.childNodes[0];
 
     let label = "";
+
+    if (labelNode?.textContent?.includes("CORE")) {
+      const coreAreaParseRegex = /CORE AREA ([A-Z]) -/;
+      const match = labelNode.textContent.match(coreAreaParseRegex);
+
+      if (match && match[1]) {
+        const letter = match[1];
+        const coreString = "CORE_" + letter;
+
+        currentCoreType =
+          CoreType[coreString as keyof typeof CoreType] ||
+          CoreType.CORE_UNKNOWN;
+      }
+    }
 
     labelNode?.childNodes.forEach((childNode) => {
       if (childNode instanceof TextNode) {
@@ -162,7 +168,7 @@ function parseCoreRequirement(coreRequirementList: Node[]) {
 
     const course = courseNode.textContent;
 
-    let newCourse;
+    let newCourse: any;
 
     if (course?.toLowerCase().includes("satisfied by")) {
       if (!label) {
@@ -176,13 +182,18 @@ function parseCoreRequirement(coreRequirementList: Node[]) {
       const classesNeeded = node?.childNodes[label ? 2 : 1]?.textContent;
 
       newCourse = {
-        courseName: label,
+        title: label,
         coursesNeeded: classesNeeded,
+        core: currentCoreType,
       };
     } else {
+      const split = course?.trim().split(" ");
+
       newCourse = {
-        courseName: label,
-        courseID: course,
+        title: label,
+        topic: split ? split[0] : "INVALID",
+        number: split ? parseInt(split[1]) : -1,
+        core: currentCoreType,
       };
     }
 

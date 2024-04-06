@@ -1,13 +1,14 @@
 import mongoose, { Schema, Types } from "mongoose";
 import { IPlan } from "./Plan";
 
-enum CoreType {
+export enum CoreType {
     CORE_A = "CORE_A",
     CORE_B = "CORE_B",
     CORE_C = "CORE_C",
     CORE_D = "CORE_D",
     CORE_E = "CORE_E",
     CORE_F = "CORE_F",
+    CORE_UNKNOWN = "CORE_UNKNOWN",
     MAJOR_REQUIREMENTS = "MAJOR_REQUIREMENTS",
     MAJOR_ELECTIVES = "MAJOR_ELECTIVES",
 }
