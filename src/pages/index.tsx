@@ -3,7 +3,15 @@ import Course from "@/components/Course";
 import Semester from "@/components/Semester";
 import { category } from "@/types/courseTypes";
 import Sidebar from "@/components/Sidebar";
-    
+
+import { Inter as FontSans } from "next/font/google";
+import { cn } from "@/lib/utils";
+
+const fontSans = FontSans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
+
 export default function Home() {
   const probability: category = {
     category: "Probability and Statistics",
@@ -13,14 +21,14 @@ export default function Home() {
         number: "MATH 3670",
         name: "Statistics and Applns",
         credits: 3,
-        completed: false
+        completed: false,
       },
       {
         number: "ISYE 3770",
         name: "Statistics and Applications",
         credits: 3,
-        completed: true
-      }
+        completed: true,
+      },
     ],
     selectedCourse: 0,
   };
@@ -32,7 +40,7 @@ export default function Home() {
         number: "ENGL 1102",
         name: "English Composition 2",
         credits: 3,
-        completed: true
+        completed: true,
       },
     ],
     selectedCourse: 0,
@@ -46,18 +54,19 @@ export default function Home() {
         number: "FREE",
         name: "Free Elective",
         credits: -1,
-        completed: false
-      }
+        completed: false,
+      },
     ],
     selectedCourse: -1,
     freeElective: true,
   };
 
-  const courses: category[] = [ english, probability, free ];
+  const courses: category[] = [english, probability, free];
 
   return (
-    // <div className={`flex min-h-screen flex-col items-center justify-between p-24`} >
-    <div className="flex h-screen bg-background gap-4 justify-center items-center">
+    <div
+      className={`${fontSans.variable} flex h-screen bg-background gap-4 justify-center items-center font-sans`}
+    >
       <Sidebar courses={courses} />
       <Semester title={"Fall 24"} courses={courses} />
       <Semester title={"Spring 24"} courses={courses} />
