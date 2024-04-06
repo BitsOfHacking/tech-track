@@ -13,6 +13,7 @@ enum CoreType {
 }
 
 export interface ICourse extends Document {
+    _id: Types.ObjectId;
     topic: string;
     number: number;
     title: string;
