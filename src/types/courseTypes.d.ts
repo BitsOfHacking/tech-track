@@ -7,7 +7,7 @@ interface course {
 
 export interface category {
   category?: string,
-  number: number,
+  number?: number,
   courses: course[],
   selectedCourse?: string,
 }
