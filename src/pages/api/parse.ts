@@ -1,13 +1,19 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { promises as fs } from "fs";
-import parse, { HTMLElement, TextNode } from "node-html-parser";
+import parse, { HTMLElement, Node, TextNode } from "node-html-parser";
 import { CoreType, ICourse } from "@/server/db/models/Course";
+
+type DegreeRequirements = {
+  creditsRequired: number,
+  creditsApplied: number
+}
 
 type Data = {
   majorRequirements: (ICourse | ICourseGroup)[],
   coreRequirements: (ICourse | ICourseGroup)[],
   electiveRequirements: (ICourse | ICourseGroup)[],
+  degreeRequirements?: DegreeRequirements
 }
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
@@ -80,7 +86,13 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
               properties.push(bodyChildNode)
             );
 
-            sections[name as string] = properties;
+            if (name === "degree-requirements") {
+              sections[name as string] = parseDegreeRequirement(childNode);
+            } else {
+              sections[name as string] = properties;
+
+            }
+
           }
         }
       });
@@ -100,6 +112,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
         majorRequirements: majorRequirements,
         coreRequirements: coreRequirements,
         electiveRequirements: electives,
+        degreeRequirements: sections["degree-requirements"] || null
       });
     } else {
       res.status(400);
@@ -118,6 +131,21 @@ interface ICourseGroup {
   courses: ICourse[];
 }
 
+function parseDegreeRequirement(childNode: Node) {
+  if (childNode instanceof HTMLElement) {
+    const creditContainer = childNode.childNodes[0].childNodes[0].childNodes[0].childNodes[0].childNodes[0];
+
+    const creditsRequired = parseInt(creditContainer.childNodes[3].textContent.split(":")[1].trim());
+    const creditsApplied = parseInt(creditContainer.childNodes[4].textContent.split(":")[1].trim());
+
+    return {
+      creditsRequired,
+      creditsApplied
+    }
+  }
+}
+
+
 function parseCoreRequirement(
   coreRequirementList: Node[],
   defaultCoreType: CoreType
@@ -132,7 +160,7 @@ function parseCoreRequirement(
   let currentCoreType = defaultCoreType;
 
   coreRequirementList.forEach((node, index) => {
-    const labelNode: ChildNode =
+    const labelNode =
       node?.childNodes[0]?.childNodes[0]?.childNodes[1]?.childNodes[0];
 
     let label = "";
