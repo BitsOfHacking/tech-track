@@ -18,6 +18,8 @@ const config: Config = {
         "secondary-background": "#E7E7E7",
         "primary-color": "#CCCCCC",
         "secondary-color": "#D9D9D9",
+        "primary-text": "#000000",
+        "secondary-text": "#6C6C6C",
         "primary-button": "#FFF000",
         "secondary-button": "#CCF0F0",
       }
