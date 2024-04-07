@@ -16,7 +16,7 @@ export type ParsedCourseData = {
   degreeRequirements?: DegreeRequirements
 }
 
-export default function handler(req: NextApiRequest, res: NextApiResponse<ParsedCourseData>) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<ParsedCourseData>) {
   const root = parse(req.body.degreeAudit, {
     voidTag: {
       tags: [
@@ -94,12 +94,12 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Parsed
       }
     });
 
-    const majorRequirements = parseSection(
+    const majorRequirements = await parseSection(
       sections["major-requirements"],
       CoreType.MAJOR_REQUIREMENTS
     );
-    const coreRequirements = parseSection(sections["core-requirements"]);
-    const electives = parseSection(
+    const coreRequirements = await parseSection(sections["core-requirements"]);
+    const electives = await parseSection(
       sections["electives"],
       CoreType.MAJOR_ELECTIVES
     );
@@ -119,8 +119,9 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Parsed
 
 function parseSection(section: Node[], defaultCoreType?: CoreType) {
   defaultCoreType = defaultCoreType || CoreType.CORE_UNKNOWN;
+  const courses = parseCoreRequirement(section, defaultCoreType);
 
-  return parseCoreRequirement(section, defaultCoreType);
+  return getReqs(courses);
 }
 
 export interface ICourseGroup {
@@ -282,7 +283,5 @@ function parseCoreRequirement(
       parsedCourses.push(newCourse);
     }
   });
-  // getReqs(parsedCourses);
-  console.log(parsedCourses)
   return parsedCourses;
 }
