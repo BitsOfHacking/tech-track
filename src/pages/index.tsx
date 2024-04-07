@@ -1,11 +1,7 @@
-import Button from "@/components/Button";
-import Course from "@/components/Course";
-import Semester from "@/components/Semester";
 import { category } from "@/types/courseTypes";
 import Sidebar from "@/components/Sidebar";
 
 import { Nunito as FontSans } from "next/font/google";
-import { cn } from "@/lib/utils";
 import ReactFlowWrapper from "@/components/ReactFlowWrapper";
 
 const fontSans = FontSans({
@@ -64,13 +60,11 @@ const free: category = {
 export const courses: category[] = [english, probability, free];
 
 export default function Home() {
-  
-
   return (
     <div
       className={`${fontSans.variable} flex h-screen bg-background gap-4 justify-center items-center font-sans`}
     >
-      <ReactFlowWrapper/>
+      <ReactFlowWrapper />
       <Sidebar courses={courses} />
       {/* <Semester title={"Fall 24"} courses={courses} />
       <Semester title={"Spring 24"} courses={courses} />
