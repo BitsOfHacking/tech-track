@@ -17,7 +17,7 @@ interface CourseProps {
 export default function Course({ data }: CourseProps) {
   const { category, searchData } = data;
 
-  const [showCourse, setShowCourse] = useState(true);
+  const [showCourse, setShowCourse] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(category.selectedCourse);
 
   function SelectedCourse({ course }: { course: course }) {
@@ -34,11 +34,11 @@ export default function Course({ data }: CourseProps) {
   return (
     <div
       className={`ml-[0.5rem] flex items-center text-center bg-primary-color rounded-[10px] w-44 min-h-[52px] course-shadow p-2 cursor-pointer`}
-      // onClick={() => {
-      //   if (category.category) {
-      //     setShowCourse(!showCourse);
-      //   }
-      // }}
+      onClick={() => {
+        if (category.category) {
+          setShowCourse(!showCourse);
+        }
+      }}
     >
       <Handle type="target" position={Position.Right} isConnectable={true} />
       <Handle type="source" position={Position.Left} isConnectable={true} />

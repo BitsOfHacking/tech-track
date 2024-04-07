@@ -4,14 +4,15 @@ interface ButtonProps {
   type: string;
   text?: string;
   onClick: (...args: any[]) => any;
+  className?: string;
 }
 
-export default function Button({ type, text, onClick }: ButtonProps) {
+export default function Button({ type, text, onClick, className }: ButtonProps) {
   return (
     <button
       className={`
         ${type === "primary" ? "bg-primary-button" : "bg-secondary-button"}
-        border rounded-[10px] px-4 py-2`}
+        ${className} border rounded-[10px] px-4 py-2`}
       onClick={onClick}
     >
       {type === "plus" ? 

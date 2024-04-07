@@ -2,8 +2,9 @@ import React, { useState, useEffect, useCallback } from "react";
 import ReactFlow, { useNodesState, useEdgesState, addEdge } from "reactflow";
 import "reactflow/dist/style.css";
 import Semester from "./Semester";
-import { courses } from "@/pages";
+// import { courses } from "@/pages";
 import Course from "./Course";
+import { category } from "@/types/courseTypes";
 
 const initBgColor = "#1A192B";
 
@@ -15,7 +16,11 @@ const nodeTypes = {
 
 const defaultViewport = { x: 0, y: 0, zoom: 1.5 };
 
-export default function ReactFlowWrapper() {
+interface Props {
+  courses: category[];
+}
+
+export default function ReactFlowWrapper({ courses }: Props) {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [searchData, setSearchData] = useState([]);
@@ -57,23 +62,30 @@ export default function ReactFlowWrapper() {
           };
         });
     
-        const courseNodes = courses.map((course, index) => {
+        let courseNodes: any[];
+ 
+      if (courses) {
+        courseNodes = courses.map((course, index) => {
           return {
             id: index + "",
             type: "courseNode",
             draggable: true,
-    
-    
-            data: { searchData: searchData, category: courses[2] },
-            position: { x: index * 200, y: 400 },
+            data: { searchData: searchData, category: course },
+            position: {
+              x: course.semesterIndex * 200,
+              y: course.semesterIndex != 0 ? ((index % 5) * 100) + 100 : (index * 75) + 75
+            },
           };
         });
-    
-        setNodes([...semesterNodes, ...courseNodes]);
+      } else {
+        courseNodes = [];
+      }
 
-        setSearchData(searchData as any);
-      });
-  }, []);
+      setNodes([...semesterNodes, ...courseNodes]);
+
+      setEdges([]);
+    })
+  }, [ courses ]);
 
   const onConnect = useCallback(
     (params: any) =>
@@ -85,7 +97,6 @@ export default function ReactFlowWrapper() {
 
   console.log(searchData);
   return (
-
     <ReactFlow
       panOnDrag={false}
       zoomOnScroll={false}

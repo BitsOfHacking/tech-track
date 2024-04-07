@@ -16,6 +16,10 @@ export default function Semester({ data }: SemesterProps) {
   const [credits, setCredits] = useState(0);
 
   useEffect(() => {
+    if (!courses) {
+      return;
+    }
+
     let credits = 0;
 
     for (let i = 0; i < courses.length; i++) {
