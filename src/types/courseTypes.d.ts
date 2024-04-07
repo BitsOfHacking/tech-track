@@ -12,4 +12,5 @@ export interface category {
   courses: course[],
   selectedCourse: number,
   freeElective?: boolean,
+  semesterIndex: number,
 }

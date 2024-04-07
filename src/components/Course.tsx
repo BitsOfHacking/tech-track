@@ -17,7 +17,7 @@ interface CourseProps {
 export default function Course({ data }: CourseProps) {
   const { category, searchData } = data;
 
-  const [showCourse, setShowCourse] = useState(true);
+  const [showCourse, setShowCourse] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(category.selectedCourse);
 
   function SelectedCourse({ course }: { course: course }) {

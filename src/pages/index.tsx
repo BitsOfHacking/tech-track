@@ -115,6 +115,7 @@ export default function Home() {
 
   useEffect(() => {
     const courseObjects: category[] = [];
+    const takenClasses: category[] = [];
 
     for (const [requirement, courses] of Object.entries(parsedCourses)) {
       if (requirement != "degreeRequirements") {
@@ -140,7 +141,7 @@ export default function Home() {
               const newCategory: category = {
                 courses: [
                   {
-                    number: classTitle,
+                    number: classTitle ? classTitle : course.title,
                     name: course.title,
                     credits: 3,
                     completed: false,
@@ -180,21 +181,43 @@ export default function Home() {
                   };
                 }),
                 selectedCourse: 0,
+                semesterIndex: 0,
               };
 
               for (let i = 0; i < numNeeded; i++) {
                 courseObjects.push(newCategory);
               }
             }
+          } else {
+            if (course.title != "Lab Science Sequence Verification") {
+              const newClass: category = {
+                courses: [
+                  {
+                    number: course.topic ? course.topic + " " + course.number : course.name,
+                    name: course.title,
+                    credits: course.credits,
+                    completed: true,
+                  },
+                ],
+                selectedCourse: 0,
+                semesterIndex: 0,
+              };
+
+              takenClasses.push(newClass);
+            }
           }
         }
       }
     }
 
-    setCourseNodes(() => {
-      return courseObjects;
-    });
-  }, [parsedCourses]);
+    for (let i = 0; i < courseObjects.length; i++) {
+      for (let j = 0; j < 5; j++) {
+        courseObjects[i].semesterIndex = Math.floor(i / 5) + 1;
+      }
+    }
+
+    setCourseNodes(() => { return [ ...takenClasses, ...courseObjects ] });
+  }, [ parsedCourses ]);
 
   return (
     <div

@@ -40,8 +40,6 @@ export default function Sidebar({ courses }: SidebarProps) {
       );
     }
 
-    debugger;
-
     return (
       <>
         <h1 className="text-2xl">

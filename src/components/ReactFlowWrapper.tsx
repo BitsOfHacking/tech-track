@@ -70,10 +70,11 @@ export default function ReactFlowWrapper({ courses }: Props) {
             id: index + "",
             type: "courseNode",
             draggable: true,
-
-
             data: { searchData: searchData, category: course },
-            position: { x: index * 200, y: 400 },
+            position: {
+              x: course.semesterIndex * 200,
+              y: course.semesterIndex != 0 ? ((index % 5) * 100) + 100 : (index * 75) + 75
+            },
           };
         });
       } else {
