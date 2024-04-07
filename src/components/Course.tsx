@@ -1,19 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   CheckCircleIcon,
   MagnifyingGlassIcon,
 } from "@heroicons/react/24/outline";
 import { category, course } from "@/types/courseTypes";
 import { Handle, Position } from "reactflow";
+import ReactSearchBox from "react-search-box";
 
 interface CourseProps {
   data: {
     category: category;
+    searchData: any;
   };
 }
 
 export default function Course({ data }: CourseProps) {
-  const { category } = data;
+  const { category, searchData } = data;
 
   const [showCourse, setShowCourse] = useState(true);
   const [selectedCourse, setSelectedCourse] = useState(category.selectedCourse);
@@ -32,11 +34,11 @@ export default function Course({ data }: CourseProps) {
   return (
     <div
       className={`ml-[0.5rem] flex items-center text-center bg-primary-color rounded-[10px] w-44 min-h-[52px] course-shadow p-2 cursor-pointer`}
-      onClick={() => {
-        if (category.category) {
-          setShowCourse(!showCourse);
-        }
-      }}
+      // onClick={() => {
+      //   if (category.category) {
+      //     setShowCourse(!showCourse);
+      //   }
+      // }}
     >
       <Handle type="target" position={Position.Right} isConnectable={true} />
       <Handle type="source" position={Position.Left} isConnectable={true} />
@@ -114,12 +116,15 @@ export default function Course({ data }: CourseProps) {
 
                   {/* <MagnifyingGlassIcon className="relative ml-2 text-red-300 h-6 w-6 mr-1" /> */}
                 </div>
-                <input
-                  className="flex text-black pl-9 justify-between align-center bg-secondary-background rounded-[10px] p-2 cursor-default w-full text-sm"
-                  onClick={(event) => {
-                    event.stopPropagation();
-                  }}
-                ></input>
+                <ReactSearchBox
+                  data={searchData}
+                  inputFontColor={"#000000"}
+
+                  // className="flex text-black pl-9 justify-between align-center bg-secondary-background rounded-[10px] p-2 cursor-default w-full text-sm"
+                  // onClick={(event) => {
+                  //   event.stopPropagation();
+                  // }}
+                ></ReactSearchBox>
               </div>
             </div>
           </div>

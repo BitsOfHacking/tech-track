@@ -18,7 +18,7 @@ const defaultViewport = { x: 0, y: 0, zoom: 1.5 };
 export default function ReactFlowWrapper() {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const [bgColor, setBgColor] = useState(initBgColor);
+  const [searchData, setSearchData] = useState([]);
 
   useEffect(() => {
     const semesters = [
@@ -31,30 +31,48 @@ export default function ReactFlowWrapper() {
       "Summer 2027",
     ];
 
-    const semesterNodes = semesters.map((semester, index) => {
-      return {
-        id: semester,
-        type: "semesterNode",
-        draggable: false,
-        data: { courses: courses, title: semester },
-        position: { x: index * 200, y: 0 },
-      };
-    });
 
-    const courseNodes = courses.map((course, index) => {
-      return {
-        id: index + "",
-        type: "courseNode",
-        draggable: true,
-
-        data: { category: courses[0] },
-        position: { x: index * 200, y: 400 },
-      };
-    });
-
-    setNodes([...semesterNodes, ...courseNodes]);
 
     setEdges([]);
+
+    fetch("https://gt-scheduler.github.io/crawler/202008.json")
+      .then((res: any) => res.json())
+      .then((data: any) => {
+        data = data.courses;
+
+        const searchData = Object.entries(data).map(([k, v]) => {
+          return {
+            key: k,
+            value: k,
+          };
+        });
+
+        const semesterNodes = semesters.map((semester, index) => {
+          return {
+            id: semester,
+            type: "semesterNode",
+            draggable: false,
+            data: { courses: courses, title: semester },
+            position: { x: index * 200, y: 0 },
+          };
+        });
+    
+        const courseNodes = courses.map((course, index) => {
+          return {
+            id: index + "",
+            type: "courseNode",
+            draggable: true,
+    
+    
+            data: { searchData: searchData, category: courses[2] },
+            position: { x: index * 200, y: 400 },
+          };
+        });
+    
+        setNodes([...semesterNodes, ...courseNodes]);
+
+        setSearchData(searchData as any);
+      });
   }, []);
 
   const onConnect = useCallback(
@@ -64,7 +82,10 @@ export default function ReactFlowWrapper() {
       ),
     []
   );
+
+  console.log(searchData);
   return (
+
     <ReactFlow
       panOnDrag={false}
       zoomOnScroll={false}
