@@ -1,12 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import ReactFlow, {
-  useNodesState,
-  useEdgesState,
-  addEdge,
-  MiniMap,
-  Controls,
-  Position,
-} from "reactflow";
+import ReactFlow, { useNodesState, useEdgesState, addEdge } from "reactflow";
 import "reactflow/dist/style.css";
 import Semester from "./Semester";
 import { courses } from "@/pages";
@@ -14,14 +7,10 @@ import Course from "./Course";
 
 const initBgColor = "#1A192B";
 
-function TestTest() {
-  return <div className="p-4 bg-red-300">hello</div>;
-}
-
 const connectionLineStyle = { stroke: "#000" };
 const nodeTypes = {
   semesterNode: Semester,
-  courseNode: Course
+  courseNode: Course,
 };
 
 const defaultViewport = { x: 0, y: 0, zoom: 1.5 };
@@ -32,28 +21,6 @@ export default function ReactFlowWrapper() {
   const [bgColor, setBgColor] = useState(initBgColor);
 
   useEffect(() => {
-    const onChange = (event: any) => {
-      setNodes((nds) =>
-        nds.map((node) => {
-          if (node.id !== "2") {
-            return node;
-          }
-
-          const color = event.target.value;
-
-          setBgColor(color);
-
-          return {
-            ...node,
-            data: {
-              ...node.data,
-              color,
-            },
-          };
-        })
-      );
-    };
-
     const semesters = [
       "Transfer",
       "Fall 2024",
@@ -77,19 +44,17 @@ export default function ReactFlowWrapper() {
     const courseNodes = courses.map((course, index) => {
       return {
         id: index + "",
-        type: 'courseNode',
+        type: "courseNode",
         draggable: true,
-        
+
         data: { category: courses[0] },
-        position: { x: index * 200, y: 400 }
-      }
-    })
+        position: { x: index * 200, y: 400 },
+      };
+    });
 
     setNodes([...semesterNodes, ...courseNodes]);
 
-    setEdges([
-      
-    ]);
+    setEdges([]);
   }, []);
 
   const onConnect = useCallback(
@@ -101,8 +66,6 @@ export default function ReactFlowWrapper() {
   );
   return (
     <ReactFlow
-      // maxZoom={0.8}
-      // minZoom={0.8}
       panOnDrag={false}
       zoomOnScroll={false}
       zoomOnDoubleClick={false}
@@ -112,7 +75,6 @@ export default function ReactFlowWrapper() {
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
-      // style={{ background: bgColor }}
       nodeTypes={nodeTypes}
       connectionLineStyle={connectionLineStyle}
       snapToGrid={true}

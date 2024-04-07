@@ -1,14 +1,14 @@
+
 import { useState } from "react";
 
 import Button from "@/components/Button";
-import Course from "@/components/Course";
 import Semester from "@/components/Semester";
+
 import { category } from "@/types/courseTypes";
 import Sidebar from "@/components/Sidebar";
 import Modal from "@/components/Modal";
 
 import { Nunito as FontSans } from "next/font/google";
-import { cn } from "@/lib/utils";
 import ReactFlowWrapper from "@/components/ReactFlowWrapper";
 
 const fontSans = FontSans({
@@ -160,6 +160,7 @@ export default function Home() {
           />
         </Modal>
       )}
+      <ReactFlowWrapper />
       <Sidebar courses={courses} />
       {/* <Semester title={"Fall 24"} courses={courses} />
       <Semester title={"Spring 24"} courses={courses} />
