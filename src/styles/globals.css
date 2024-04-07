@@ -7,6 +7,15 @@
   z-index: -1 !important;
 }
 
+/* There's no way to my knowledge of manually setting this, but we need text to not be white */
+.react-search-box-dropdown-list-item {
+  color: black;
+}
+
+.radix-themes {
+  --default-font-family: var(--font-sans);
+}
+
 @layer base {
   :root {
     --background: #d4e0f0;
