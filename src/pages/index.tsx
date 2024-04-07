@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import Button from "@/components/Button";
 
@@ -63,6 +63,8 @@ export const courses: category[] = [english, probability, free];
 export default function Home() {
   const [ showNewPlanModal, setShowNewPlanModal ] = useState(true);
   const [ degreeAudit, setDegreeAudit ] = useState("");
+  const [ parsedCourses, setParsedCourses ]: [ any[], Function ] = useState([]);
+  const [ courseNodes, setCourseNodes ]: [ category[], Function ] = useState([]);
 
   const probability: category = {
     category: "Probability and Statistics",
@@ -112,13 +114,51 @@ export default function Home() {
     freeElective: true,
   };
 
-  const courses: category[] = [english, probability, free];
+  useEffect(() => {
+    const courseObjects: category[] = [];
+
+    for (const [requirement, courses] of Object.entries(parsedCourses)) {
+      if (requirement != "degreeRequirements") {
+        for (const course of courses) {
+          if (!course.completed && course.coursesNeeded) {
+            // Either just one class or group of classes, either way has title
+            debugger
+            try {
+              const numNeeded = course.coursesNeeded.match(/\d+/)[0];
+            } catch (e) {
+              console.log(e);
+            }
+
+            const courseOptions = course.coursesNeeded.split("or");
+
+            if (courseOptions.length === 1) {
+              const newCategory: category = {
+                courses: [
+                  {
+                    number: "FREE XXXX",
+                    name: course.title,
+                    credits: 3,
+                    completed: false,
+                  }
+                ],
+                selectedCourse: 3,
+              }
+
+              courseObjects.push(newCategory);
+            }
+          }
+        }
+      }
+    }
+
+    setCourseNodes(() => { return courseObjects });
+  }, [ parsedCourses ]);
 
   return (
     <div
       className={`flex h-screen bg-background gap-4 justify-center items-center font-sans`}
     >
-      <ReactFlowWrapper/>
+      <ReactFlowWrapper courses={courseNodes} />
       {showNewPlanModal && (
         <Modal title={"New Plan"} onClose={() => setShowNewPlanModal(false)}>
           <input
@@ -150,15 +190,14 @@ export default function Home() {
                 .then((res) => res.json())
                 .then((data: any) => {
                   console.log({ data });
+                  setParsedCourses(data);
+                  setShowNewPlanModal(false);
                 });
             }}
           />
         </Modal>
       )}
       <Sidebar courses={courses} />
-      {/* <Semester title={"Fall 24"} courses={courses} />
-      <Semester title={"Spring 24"} courses={courses} />
-      <Semester title={"Spring 24"} courses={courses} /> */}
     </div>
   );
 }
