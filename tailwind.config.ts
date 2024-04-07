@@ -60,6 +60,8 @@ const config = {
         "secondary-color": "#D9D9D9",
         "primary-text": "#ffffff",
         "secondary-text": "#c2c4cc",
+        "modal-veil": "#5A5A5A",
+        "modal-background": "#D4E0F0",
         "primary-button": "#FFF000",
         "secondary-button": "#CCF0F0",
         "semester-header-background": "#748bf1",
