@@ -1,6 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { promises as fs } from "fs";
 import parse, { HTMLElement, Node, TextNode } from "node-html-parser";
 import { CoreType, ICourse } from "@/server/db/models/Course";
 
@@ -17,85 +16,82 @@ type Data = {
 }
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
-  fs.readFile(process.cwd() + "/public/degreeaudit.html", {
-    encoding: "utf-8",
-  }).then((data) => {
-    const root = parse(data, {
-      voidTag: {
-        tags: [
-          "area",
-          "base",
-          "br",
-          "col",
-          "embed",
-          "hr",
-          "img",
-          "input",
-          "link",
-          "meta",
-          "param",
-          "source",
-          "track",
-          "wbr",
-          "script",
-          "style",
-        ],
-        closingSlash: true,
-      },
-      blockTextElements: {
-        style: true,
-        script: true,
-        pre: true,
-      },
-    });
+  const root = parse(req.body.degreeAudit, {
+    voidTag: {
+      tags: [
+        "area",
+        "base",
+        "br",
+        "col",
+        "embed",
+        "hr",
+        "img",
+        "input",
+        "link",
+        "meta",
+        "param",
+        "source",
+        "track",
+        "wbr",
+        "script",
+        "style",
+      ],
+      closingSlash: true,
+    },
+    blockTextElements: {
+      style: true,
+      script: true,
+      pre: true,
+    },
+  });
 
-    const main = root.getElementsByTagName("main")[0];
+  const main = root.getElementsByTagName("main")[0];
 
-    const container =
-      main.childNodes[0].childNodes[2].childNodes[0].childNodes[1].childNodes[0]
-        .childNodes[0];
+  const container =
+    main.childNodes[0].childNodes[2].childNodes[0].childNodes[1].childNodes[0]
+      .childNodes[0];
 
-    let sections: any = {};
+  let sections: any = {};
 
-    container.childNodes
-      .splice(3, container.childNodes.length)
-      .forEach((childNode) => {
-        if (childNode.childNodes.length > 0) {
-          let name =
-            childNode.childNodes[0].parentNode.querySelector("h2")?.firstChild
-              ?.innerText;
-          const table =
-            childNode.childNodes[0].parentNode.querySelector("table");
+  container.childNodes
+    .splice(3, container.childNodes.length)
+    .forEach((childNode) => {
+      if (childNode.childNodes.length > 0) {
+        let name =
+          childNode.childNodes[0].parentNode.querySelector("h2")?.firstChild
+            ?.innerText;
+        const table =
+          childNode.childNodes[0].parentNode.querySelector("table");
 
-          // Filter name
-          if (name !== undefined) {
-            const split = name.split("-");
+        // Filter name
+        if (name !== undefined) {
+          const split = name.split("-");
 
-            name = split[split.length - 1]
-              .trim()
-              .toLowerCase()
-              .replaceAll(" ", "-");
-          }
-
-          if (name !== null && table !== null) {
-            const body = table.lastChild!;
-
-            let properties: any[] = [];
-
-            body.childNodes.forEach((bodyChildNode) =>
-              properties.push(bodyChildNode)
-            );
-
-            if (name === "degree-requirements") {
-              sections[name as string] = parseDegreeRequirement(childNode);
-            } else {
-              sections[name as string] = properties;
-
-            }
-
-          }
+          name = split[split.length - 1]
+            .trim()
+            .toLowerCase()
+            .replaceAll(" ", "-");
         }
-      });
+
+        if (name !== null && table !== null) {
+          const body = table.lastChild!;
+
+          let properties: any[] = [];
+
+          body.childNodes.forEach((bodyChildNode) =>
+            properties.push(bodyChildNode)
+          );
+
+          if (name === "degree-requirements") {
+            sections[name as string] = parseDegreeRequirement(childNode);
+          } else {
+            sections[name as string] = properties;
+
+          }
+
+        }
+      }
+    });
 
     const majorRequirements = parseSection(
       sections["major-requirements"],
@@ -117,7 +113,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
     } else {
       res.status(400);
     }
-  });
+  // });
 }
 
 function parseSection(section: Node[], defaultCoreType?: CoreType) {
