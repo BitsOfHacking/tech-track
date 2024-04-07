@@ -130,8 +130,8 @@ export default function ReactFlowWrapper() {
       style={{ background: bgColor }}
       nodeTypes={nodeTypes}
       connectionLineStyle={connectionLineStyle}
-      // snapToGrid={true}
-      // snapGrid={snapGrid}
+      snapToGrid={true}
+      snapGrid={[160, 30]}
       defaultViewport={defaultViewport}
       fitView
       attributionPosition="bottom-left"

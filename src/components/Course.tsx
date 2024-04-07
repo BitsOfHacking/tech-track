@@ -49,9 +49,9 @@ export default function Course({ category }: CourseProps) {
                       event.stopPropagation();
                     }}
                   >
-                    <div className="flex gap-2 text-priamry-text text-lg">
+                    <div className="flex gap-2 text-priamry-text text-lg align-middle">
                       <div
-                        className="flex h-6 w-6 border-2 border-primary-text rounded-full justify-center items-center cursor-pointer"
+                        className="flex h-6 w-6 border-2 border-black rounded-full justify-center items-center cursor-pointer"
                         onClick={(event) => {
                           event.stopPropagation();
                           setSelectedCourse(index);
@@ -59,11 +59,11 @@ export default function Course({ category }: CourseProps) {
                       >
                         {selectedCourse === index && (
                           <div>
-                            <CheckCircleIcon className="h-[30px] w-[30px] stroke-primary-text" />
+                            <CheckCircleIcon className="h-[30px] w-[30px] stroke-black" />
                           </div>
                         )}
                       </div>
-                      <div className="text-primary-text text-sm">
+                      <div className="text-black text-sm align-middle">
                         {course.number}
                       </div>
                     </div>
