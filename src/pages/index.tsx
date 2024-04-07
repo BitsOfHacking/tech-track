@@ -141,7 +141,7 @@ export default function Home() {
                     completed: false,
                   }
                 ],
-                selectedCourse: 3,
+                selectedCourse: 0,
               }
 
               courseObjects.push(newCategory);

@@ -64,25 +64,26 @@ export default function ReactFlowWrapper({ courses }: Props) {
     
         let courseNodes: any[];
  
-    if (courses) {
-      courseNodes = courses.map((course, index) => {
-            return {
-              id: index + "",
-              type: "courseNode",
-              draggable: true,
-    
-    
-              data: { searchData: searchData, category: courses[2] },
-              position: { x: index * 200, y: 400 },
-            };
-          });
-        } else {
-      courseNodes = [];
-    }
+      if (courses) {
+        courseNodes = courses.map((course, index) => {
+          return {
+            id: index + "",
+            type: "courseNode",
+            draggable: true,
 
-        setNodes([...semesterNodes, ...courseNodes]);
 
-    setEdges([]);
+            data: { searchData: searchData, category: courses[2] },
+            position: { x: index * 200, y: 400 },
+          };
+        });
+      } else {
+        courseNodes = [];
+      }
+
+      setNodes([...semesterNodes, ...courseNodes]);
+
+      setEdges([]);
+    })
   }, [ courses ]);
 
   const onConnect = useCallback(
@@ -95,7 +96,6 @@ export default function ReactFlowWrapper({ courses }: Props) {
 
   console.log(searchData);
   return (
-
     <ReactFlow
       panOnDrag={false}
       zoomOnScroll={false}
