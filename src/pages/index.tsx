@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 
 import Button from "@/components/Button";
@@ -61,10 +60,10 @@ const free: category = {
 export const courses: category[] = [english, probability, free];
 
 export default function Home() {
-  const [ showNewPlanModal, setShowNewPlanModal ] = useState(true);
-  const [ degreeAudit, setDegreeAudit ] = useState("");
-  const [ parsedCourses, setParsedCourses ]: [ any[], Function ] = useState([]);
-  const [ courseNodes, setCourseNodes ]: [ category[], Function ] = useState([]);
+  const [showNewPlanModal, setShowNewPlanModal] = useState(true);
+  const [degreeAudit, setDegreeAudit] = useState("");
+  const [parsedCourses, setParsedCourses]: [any[], Function] = useState([]);
+  const [courseNodes, setCourseNodes]: [category[], Function] = useState([]);
 
   const probability: category = {
     category: "Probability and Statistics",
@@ -120,7 +119,11 @@ export default function Home() {
     for (const [requirement, courses] of Object.entries(parsedCourses)) {
       if (requirement != "degreeRequirements") {
         for (const course of courses) {
-          if (!course.completed && course.coursesNeeded && course.title != "Lab Science Sequence Verification") {
+          if (
+            !course.completed &&
+            course.coursesNeeded &&
+            course.title != "Lab Science Sequence Verification"
+          ) {
             let numNeeded = 1;
 
             try {
@@ -141,10 +144,10 @@ export default function Home() {
                     name: course.title,
                     credits: 3,
                     completed: false,
-                  }
+                  },
                 ],
                 selectedCourse: 0,
-              }
+              };
 
               courseObjects.push(newCategory);
             } else {
@@ -174,10 +177,10 @@ export default function Home() {
                     name: course.title,
                     credits: 3,
                     completed: false,
-                  }
+                  };
                 }),
                 selectedCourse: 0,
-              }
+              };
 
               for (let i = 0; i < numNeeded; i++) {
                 courseObjects.push(newCategory);
@@ -188,8 +191,10 @@ export default function Home() {
       }
     }
 
-    setCourseNodes(() => { return courseObjects });
-  }, [ parsedCourses ]);
+    setCourseNodes(() => {
+      return courseObjects;
+    });
+  }, [parsedCourses]);
 
   return (
     <div
@@ -198,40 +203,74 @@ export default function Home() {
       <ReactFlowWrapper courses={courseNodes} />
       {showNewPlanModal && (
         <Modal title={"New Plan"} onClose={() => setShowNewPlanModal(false)}>
-          <input
-            type="file"
-            onChange={(event) => {
-              const fileReader = new FileReader();
+          <div className="p-4 flex items-center justify-center w-full">
+            <label className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+              <div className="flex flex-col items-center justify-center pt-5 pb-6 w-64">
+                <svg
+                  className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 20 16"
+                >
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                  />
+                </svg>
+                <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                  <span className="font-semibold">Click to upload</span> or drag
+                  and drop
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  DegreeAudit File (.html)
+                </p>
+              </div>
+              <input
+                type="file"
+                id="dropzone-file"
+                className="hidden p-5"
+                onChange={(event) => {
+                  const fileReader = new FileReader();
 
-              if (event.target.files) {
-                fileReader.readAsText(event.target.files[0]);
-              }
+                  if (event.target.files) {
+                    fileReader.readAsText(event.target.files[0]);
+                  }
 
-              fileReader.onload = function (e) {
-                setDegreeAudit(e.target?.result as string);
-              };
-            }}
-          ></input>
-          <Button
-            type="Primary"
-            text="Submit"
-            onClick={() => {
-              console.log(degreeAudit);
-              fetch("/api/parse", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ degreeAudit: degreeAudit }),
-              })
-                .then((res) => res.json())
-                .then((data: any) => {
-                  console.log({ data });
-                  setParsedCourses(data);
-                  setShowNewPlanModal(false);
-                });
-            }}
-          />
+                  fileReader.onload = function (e) {
+                    setDegreeAudit(e.target?.result as string);
+                  };
+                }}
+              ></input>
+            </label>
+          </div>
+
+          <div className="w-full flex justify-end">
+            <Button
+              type="Primary"
+              text="Submit"
+              className="bg-[#748bf1] mt-4 px-8 rounded-lg text-white"
+              onClick={() => {
+                console.log(degreeAudit);
+                fetch("/api/parse", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({ degreeAudit: degreeAudit }),
+                })
+                  .then((res) => res.json())
+                  .then((data: any) => {
+                    console.log({ data });
+                    setParsedCourses(data);
+                    setShowNewPlanModal(false);
+                  });
+              }}
+            />
+          </div>
         </Modal>
       )}
       <Sidebar courses={parsedCourses} />

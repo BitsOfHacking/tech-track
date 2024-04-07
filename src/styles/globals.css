@@ -7,6 +7,10 @@
   z-index: -1 !important;
 }
 
+::file-selector-button {
+  display: none;
+}
+
 /* There's no way to my knowledge of manually setting this, but we need text to not be white */
 .react-search-box-dropdown-list-item {
   color: black;
