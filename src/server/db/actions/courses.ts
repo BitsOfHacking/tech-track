@@ -1,4 +1,4 @@
-import dbConnect from "../dbConnect";
+// import dbConnect from "../dbConnect";
 import Course from "../models/Course";
 import { ICourse } from "../models/Course";
 import { ICourseGroup } from "@/pages/api/parse";
@@ -8,7 +8,7 @@ export async function createCourse(course: ICourse): Promise<{
     data?: ICourse;
 }> {
     try {
-        await dbConnect();
+        // await dbConnect();
         const newCourse = await Course.create(course);
         return { data: newCourse };
     } catch (error: any) {
@@ -21,7 +21,7 @@ export async function getCourses(plan_id: string): Promise<{
     data: Array<ICourse>;
 }> {
     try {
-        await dbConnect();
+        // await dbConnect();
         const courses: Array<ICourse> = await Course.find({plan: plan_id});
         return {
             data: courses,
@@ -36,7 +36,7 @@ export async function updateCourse(course_id: string, newCourse: ICourse): Promi
     data?: ICourse;
 }> {
     try {
-        await dbConnect();
+        // await dbConnect();
         const updatedCourse = await Course.findByIdAndUpdate(course_id, newCourse, {
             new: true,
             runValidators: true,
@@ -52,7 +52,7 @@ export async function updateCourses(plan_id: string, newCourses: ICourse[]): Pro
     success: boolean;
 }> {
     try {
-        await dbConnect();
+        // await dbConnect();
         const bulkWriteQuery = newCourses.map((course) => {
             return {
                 updateOne: {
@@ -73,7 +73,7 @@ export async function updateCourses(plan_id: string, newCourses: ICourse[]): Pro
 }
 
 export async function getReqs(givenCourses: Array<ICourse | ICourseGroup>) {
-    await dbConnect()
+    // await dbConnect()
     let course_data;
     try {
         const res = await fetch("https://gt-scheduler.github.io/crawler-v2/202408.json")
