@@ -148,7 +148,6 @@ export default function Home() {
 
               courseObjects.push(newCategory);
             } else {
-              debugger
               const courseTitle: string[] = [];
 
               let currPrefix: string = "";

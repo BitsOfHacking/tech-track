@@ -40,9 +40,13 @@ export default function Sidebar({ courses }: SidebarProps) {
       );
     }
 
+    debugger;
+
     return (
       <>
-        <h1 className="text-2xl">{convertToTitleCase(category).toUpperCase()}</h1>
+        <h1 className="text-2xl">
+          {convertToTitleCase(category).toUpperCase()}
+        </h1>
         {values.map((elem) => {
           if (elem.title) {
             return (
@@ -54,7 +58,11 @@ export default function Sidebar({ courses }: SidebarProps) {
                       htmlFor="terms"
                       className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                     >
-                      {elem.topic} {elem.number}: {elem.title}, {elem.credits}
+                      {elem.topic
+                        ? elem.topic
+                        : elem.coursesNeeded.split(" in ")[1]}{" "}
+                      {elem.number} {elem.title}
+                      {elem.credits ? ", " + elem.credits + " credits" : ""}
                     </label>
                   </div>
                 </div>
@@ -63,7 +71,8 @@ export default function Sidebar({ courses }: SidebarProps) {
           } else if (elem.name) {
             return (
               <>
-                <h2 className="text-md">{elem.name}</h2>
+                {/* In the future this can denote specifically that this is a category, but there is no easy way to mark sections at the moment  */}
+                {/* <h2 className="text-md">{elem.name}</h2> */}
                 {elem.courses.map((course) => {
                   return (
                     <h2 key={course.title}>
@@ -78,7 +87,13 @@ export default function Sidebar({ courses }: SidebarProps) {
                             htmlFor="terms"
                             className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                           >
-                            {course.name} {course.credits}
+                            {course.topic
+                              ? course.topic
+                              : course.coursesNeeded.split(" in ")[1]}{" "}
+                            {course.number} {course.title}
+                            {course.credits
+                              ? ", " + course.credits + " credits"
+                              : ""}
                           </label>
                         </div>
                       </div>
