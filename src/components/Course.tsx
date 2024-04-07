@@ -4,12 +4,17 @@ import {
   MagnifyingGlassIcon,
 } from "@heroicons/react/24/outline";
 import { category, course } from "@/types/courseTypes";
+import { Handle, Position } from "reactflow";
 
 interface CourseProps {
-  category: category;
+  data: {
+    category: category;
+  };
 }
 
-export default function Course({ category }: CourseProps) {
+export default function Course({ data }: CourseProps) {
+  const { category } = data;
+
   const [showCourse, setShowCourse] = useState(true);
   const [selectedCourse, setSelectedCourse] = useState(category.selectedCourse);
 
@@ -26,13 +31,15 @@ export default function Course({ category }: CourseProps) {
 
   return (
     <div
-      className={`flex items-center text-center bg-primary-color rounded-[10px] w-44 min-h-[52px] course-shadow p-2 cursor-pointer`}
+      className={`ml-[0.5rem] flex items-center text-center bg-primary-color rounded-[10px] w-44 min-h-[52px] course-shadow p-2 cursor-pointer`}
       onClick={() => {
         if (category.category) {
           setShowCourse(!showCourse);
         }
       }}
     >
+      <Handle type="target" position={Position.Right} isConnectable={true} />
+      <Handle type="source" position={Position.Left} isConnectable={true} />
       {showCourse === true && category.category ? (
         !category.freeElective ? (
           <div>

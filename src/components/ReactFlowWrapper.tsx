@@ -8,21 +8,20 @@ import ReactFlow, {
   Position,
 } from "reactflow";
 import "reactflow/dist/style.css";
+import Semester from "./Semester";
+import { courses } from "@/pages";
+import Course from "./Course";
 
 const initBgColor = "#1A192B";
 
 function TestTest() {
-  return (
-    <div className="p-4 bg-red-300">
-      hello
-    </div>
-  )
+  return <div className="p-4 bg-red-300">hello</div>;
 }
 
-const connectionLineStyle = { stroke: "#fff" };
-const snapGrid = [20, 20];
+const connectionLineStyle = { stroke: "#000" };
 const nodeTypes = {
-  selectorNode: TestTest,
+  semesterNode: Semester,
+  courseNode: Course
 };
 
 const defaultViewport = { x: 0, y: 0, zoom: 1.5 };
@@ -55,101 +54,72 @@ export default function ReactFlowWrapper() {
       );
     };
 
-    setNodes([
-      {
-        id: "1",
-        type: "input",
-        data: { label: "An input node" },
-        position: { x: 0, y: 50 },
-        sourcePosition: Position.Right,
-      },
-      {
-        id: "2",
-        type: "selectorNode",
-        data: { onChange: onChange, color: initBgColor },
-        style: { border: "1px solid #777", padding: 10 },
-        position: { x: 300, y: 50 },
-      },
-      {
-        id: "3",
-        type: "output",
-        data: { label: "Output A" },
-        position: { x: 650, y: 25 },
-        targetPosition: Position.Left,
-      },
-      {
-        id: "4",
-        type: "output",
-        data: { label: "Output B" },
-        position: { x: 650, y: 100 },
-        targetPosition: Position.Left,
-      },
-    ]);
+    const semesters = [
+      "Transfer",
+      "Fall 2024",
+      "Spring 2025",
+      "Summer 2025",
+      "Fall 2025",
+      "Spring 2026",
+      "Summer 2027",
+    ];
+
+    const semesterNodes = semesters.map((semester, index) => {
+      return {
+        id: semester,
+        type: "semesterNode",
+        draggable: false,
+        data: { courses: courses, title: semester },
+        position: { x: index * 200, y: 0 },
+      };
+    });
+
+    const courseNodes = courses.map((course, index) => {
+      return {
+        id: index + "",
+        type: 'courseNode',
+        draggable: true,
+        
+        data: { category: courses[0] },
+        position: { x: index * 200, y: 400 }
+      }
+    })
+
+    setNodes([...semesterNodes, ...courseNodes]);
 
     setEdges([
-      {
-        id: "e1-2",
-        source: "1",
-        target: "2",
-        animated: true,
-        style: { stroke: "#fff" },
-      },
-      {
-        id: "e2a-3",
-        source: "2",
-        target: "3",
-        sourceHandle: "a",
-        animated: true,
-        style: { stroke: "#fff" },
-      },
-      {
-        id: "e2b-4",
-        source: "2",
-        target: "4",
-        sourceHandle: "b",
-        animated: true,
-        style: { stroke: "#fff" },
-      },
+      
     ]);
   }, []);
 
   const onConnect = useCallback(
     (params: any) =>
       setEdges((eds) =>
-        addEdge({ ...params, animated: true, style: { stroke: "#fff" } }, eds)
+        addEdge({ ...params, animated: true, style: { stroke: "#000" } }, eds)
       ),
     []
   );
   return (
     <ReactFlow
+      // maxZoom={0.8}
+      // minZoom={0.8}
+      panOnDrag={false}
+      zoomOnScroll={false}
+      zoomOnDoubleClick={false}
+      zoomOnPinch={false}
       nodes={nodes}
       edges={edges}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
-      style={{ background: bgColor }}
+      // style={{ background: bgColor }}
       nodeTypes={nodeTypes}
       connectionLineStyle={connectionLineStyle}
       snapToGrid={true}
-      snapGrid={[160, 30]}
+      snapGrid={[200, 100]}
       defaultViewport={defaultViewport}
       fitView
       attributionPosition="bottom-left"
-    >
-      <MiniMap
-        nodeStrokeColor={(n) => {
-          if (n.type === "input") return "#0041d0";
-          if (n.type === "selectorNode") return bgColor;
-          if (n.type === "output") return "#ff0072";
-
-          return "#ff0072"
-        }}
-        nodeColor={(n) => {
-          if (n.type === "selectorNode") return bgColor;
-          return "#fff";
-        }}
-      />
-      <Controls />
-    </ReactFlow>
+    ></ReactFlow>
   );
 }
