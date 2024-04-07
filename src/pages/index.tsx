@@ -120,7 +120,7 @@ export default function Home() {
     for (const [requirement, courses] of Object.entries(parsedCourses)) {
       if (requirement != "degreeRequirements") {
         for (const course of courses) {
-          if (!course.completed && course.coursesNeeded) {
+          if (!course.completed && course.coursesNeeded && course.title != "Lab Science Sequence Verification") {
             let numNeeded = 1;
 
             try {
