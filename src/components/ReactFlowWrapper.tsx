@@ -52,38 +52,45 @@ export default function ReactFlowWrapper({ courses }: Props) {
           };
         });
 
+        let courseNodes: any[];
+        const creditsPerSemester: { [ key: number ]: number } = { 0: 0 };
+ 
+        if (courses) {
+          courseNodes = courses.map((course, index) => {
+            if (creditsPerSemester[course.semesterIndex]) {
+              creditsPerSemester[course.semesterIndex] += course.courses[course.selectedCourse].credits;
+            } else {
+              creditsPerSemester[course.semesterIndex] = course.courses[course.selectedCourse].credits;
+            }
+
+            return {
+              id: index + "",
+              type: "courseNode",
+              draggable: true,
+              data: { searchData: searchData, category: course },
+              position: {
+                x: course.semesterIndex * 200,
+                y: course.semesterIndex != 0 ? ((index % 5) * 100) + 100 : (index * 75) + 75
+              },
+            };
+          });
+        } else {
+          courseNodes = [];
+        }
+
         const semesterNodes = semesters.map((semester, index) => {
           return {
             id: semester,
             type: "semesterNode",
             draggable: false,
-            data: { courses: courses, title: semester },
+            data: { courses: courses, title: semester, credits: creditsPerSemester[index] },
             position: { x: index * 200, y: 0 },
           };
         });
-    
-        let courseNodes: any[];
- 
-      if (courses) {
-        courseNodes = courses.map((course, index) => {
-          return {
-            id: index + "",
-            type: "courseNode",
-            draggable: true,
-            data: { searchData: searchData, category: course },
-            position: {
-              x: course.semesterIndex * 200,
-              y: course.semesterIndex != 0 ? ((index % 5) * 100) + 100 : (index * 75) + 75
-            },
-          };
-        });
-      } else {
-        courseNodes = [];
-      }
 
-      setNodes([...semesterNodes, ...courseNodes]);
+        setNodes([...semesterNodes, ...courseNodes]);
 
-      setEdges([]);
+        setEdges([]);
     })
   }, [ courses ]);
 
@@ -95,7 +102,7 @@ export default function ReactFlowWrapper({ courses }: Props) {
     []
   );
 
-  console.log(searchData);
+  // console.log(searchData);
   return (
     <ReactFlow
       panOnDrag={false}

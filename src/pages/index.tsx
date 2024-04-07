@@ -126,9 +126,11 @@ export default function Home() {
             course.title != "Lab Science Sequence Verification"
           ) {
             let numNeeded = 1;
+            let totalCredits = 3;
 
             try {
-              numNeeded = course.coursesNeeded.match(/\d+/)[0] / 3;
+              totalCredits = course.coursesNeeded.match(/\d+/)[0];
+              numNeeded = totalCredits / 3;
             } catch (e) {
               console.log(e);
             }
@@ -195,7 +197,7 @@ export default function Home() {
                   {
                     number: course.topic ? course.topic + " " + course.number : course.name,
                     name: course.title,
-                    credits: course.credits,
+                    credits: isNaN(course.credits) ? 3 : course.credits,
                     completed: true,
                   },
                 ],
@@ -216,6 +218,7 @@ export default function Home() {
       }
     }
 
+    // console.log([ ...takenClasses, ...courseObjects ]);
     setCourseNodes(() => { return [ ...takenClasses, ...courseObjects ] });
   }, [ parsedCourses ]);
 
@@ -277,7 +280,6 @@ export default function Home() {
               text="Submit"
               className="bg-[#748bf1] mt-4 px-8 rounded-lg text-white"
               onClick={() => {
-                console.log(degreeAudit);
                 fetch("/api/parse", {
                   method: "POST",
                   headers: {

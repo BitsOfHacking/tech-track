@@ -7,31 +7,32 @@ interface SemesterProps {
   data: {
     title: string;
     courses: category[];
+    credits?: number;
   };
 }
 
 export default function Semester({ data }: SemesterProps) {
-  const { title, courses } = data;
+  const { title, courses, credits } = data;
 
-  const [credits, setCredits] = useState(0);
+  // const [credits, setCredits] = useState(0);
 
-  useEffect(() => {
-    if (!courses) {
-      return;
-    }
+  // useEffect(() => {
+  //   if (!courses) {
+  //     return;
+  //   }
 
-    let credits = 0;
+  //   let credits = 0;
 
-    for (let i = 0; i < courses.length; i++) {
-      if (courses[i].category) {
-        credits += 3;
-      } else {
-        credits += courses[i].courses[0].credits;
-      }
-    }
+  //   for (let i = 0; i < courses.length; i++) {
+  //     if (courses[i].category) {
+  //       credits += 3;
+  //     } else {
+  //       credits += courses[i].courses[0].credits;
+  //     }
+  //   }
 
-    setCredits(credits);
-  }, [courses]);
+  //   setCredits(credits);
+  // }, [courses]);
 
   return (
     <div className="h-screen flex flex-col justify-center text-white">
@@ -56,7 +57,7 @@ export default function Semester({ data }: SemesterProps) {
               console.log("ahhhh");
             }}
           />
-          <div className="align-middle">{credits} Credits</div>
+          <div className="align-middle">{credits ? credits : 0} Credits</div>
         </div>
       </div>
     </div>
