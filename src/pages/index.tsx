@@ -2,19 +2,13 @@
 import { useState } from "react";
 
 import Button from "@/components/Button";
-import Semester from "@/components/Semester";
 
 import { category } from "@/types/courseTypes";
 import Sidebar from "@/components/Sidebar";
 import Modal from "@/components/Modal";
 
-import { Nunito as FontSans } from "next/font/google";
 import ReactFlowWrapper from "@/components/ReactFlowWrapper";
-
-const fontSans = FontSans({
-  subsets: ["latin"],
-  variable: "--font-sans",
-});
+import { cn } from "@/lib/utils";
 
 const probability: category = {
   category: "Probability and Statistics",
@@ -122,7 +116,7 @@ export default function Home() {
 
   return (
     <div
-      className={`${fontSans.variable} flex h-screen bg-background gap-4 justify-center items-center font-sans`}
+      className={`flex h-screen bg-background gap-4 justify-center items-center font-sans`}
     >
       <ReactFlowWrapper/>
       {showNewPlanModal && (
