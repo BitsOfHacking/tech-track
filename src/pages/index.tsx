@@ -116,6 +116,7 @@ export default function Home() {
   useEffect(() => {
     const courseObjects: category[] = [];
     const takenClasses: category[] = [];
+    let creditsNeeded: number = 0;
 
     for (const [requirement, courses] of Object.entries(parsedCourses)) {
       if (requirement != "degreeRequirements") {
@@ -152,6 +153,7 @@ export default function Home() {
                 selectedCourse: 0,
               };
 
+              creditsNeeded += 3;
               courseObjects.push(newCategory);
             } else {
               const courseTitle: string[] = [];
@@ -187,6 +189,7 @@ export default function Home() {
               };
 
               for (let i = 0; i < numNeeded; i++) {
+                creditsNeeded += 3;
                 courseObjects.push(newCategory);
               }
             }
@@ -209,6 +212,30 @@ export default function Home() {
             }
           }
         }
+      }
+    }
+
+    const creditsLeft: number = parsedCourses["degreeRequirements"] ? parsedCourses["degreeRequirements"]["creditsRequired"] - parsedCourses["degreeRequirements"]["creditsApplied"] : 0;
+    if (creditsNeeded < creditsLeft) {
+      const difference: number = creditsLeft - creditsNeeded;
+
+      for (let i = 0; i < difference; i += 3) {
+        const free: category = {
+          category: "Free Elective",
+          courses: [
+            {
+              number: "FREE",
+              name: "Free Elective",
+              credits: 3,
+              completed: false,
+            },
+          ],
+          selectedCourse: 0,
+          freeElective: true,
+          semesterIndex: 0,
+        };
+
+        courseObjects.push(free);
       }
     }
 

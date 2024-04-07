@@ -19,6 +19,7 @@ export default function Course({ data }: CourseProps) {
 
   const [showCourse, setShowCourse] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(category.selectedCourse);
+  const [ chosenCourse, setChosenCourse ] = useState(category.courses[0]);
 
   function SelectedCourse({ course }: { course: course }) {
     return (
@@ -88,7 +89,12 @@ export default function Course({ data }: CourseProps) {
           <div>
             <div className="text-xl text-primary-text mb-2">
               <div className="mb-2">FREE</div>
-              <div className="flex items-center">
+              <div
+                className="flex items-center"
+                onClick={(event) => {
+                  event.stopPropagation();
+                }}
+              >
                 <div className="absolute color-primary-color">
                   <svg
                     className="relative ml-2"
@@ -119,11 +125,15 @@ export default function Course({ data }: CourseProps) {
                 <ReactSearchBox
                   data={searchData}
                   inputFontColor={"#000000"}
-
                   // className="flex text-black pl-9 justify-between align-center bg-secondary-background rounded-[10px] p-2 cursor-default w-full text-sm"
-                  // onClick={(event) => {
-                  //   event.stopPropagation();
-                  // }}
+                  onChange={(event: string) => {
+                    setChosenCourse({
+                      number: event,
+                      name: "Free Elective",
+                      credits: 3,
+                      completed: false,
+                    })
+                  }}
                 ></ReactSearchBox>
               </div>
             </div>
@@ -134,7 +144,7 @@ export default function Course({ data }: CourseProps) {
           course={
             category.category && !category.freeElective
               ? category.courses[selectedCourse]
-              : category.courses[0]
+              : chosenCourse
           }
         />
       )}
