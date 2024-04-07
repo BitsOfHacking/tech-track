@@ -197,7 +197,7 @@ export default function Home() {
           />
         </Modal>
       )}
-      <Sidebar courses={courses} />
+      <Sidebar courses={parsedCourses} />
     </div>
   );
 }
