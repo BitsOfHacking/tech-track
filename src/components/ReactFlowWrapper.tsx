@@ -72,7 +72,7 @@ export default function ReactFlowWrapper({ courses }: Props) {
             draggable: true,
 
 
-            data: { searchData: searchData, category: courses[0] },
+            data: { searchData: searchData, category: course },
             position: { x: index * 200, y: 400 },
           };
         });

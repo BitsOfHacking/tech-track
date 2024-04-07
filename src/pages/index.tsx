@@ -121,21 +121,23 @@ export default function Home() {
       if (requirement != "degreeRequirements") {
         for (const course of courses) {
           if (!course.completed && course.coursesNeeded) {
-            // Either just one class or group of classes, either way has title
-            debugger
+            let numNeeded = 1;
+
             try {
-              const numNeeded = course.coursesNeeded.match(/\d+/)[0];
+              numNeeded = course.coursesNeeded.match(/\d+/)[0] / 3;
             } catch (e) {
               console.log(e);
             }
 
-            const courseOptions = course.coursesNeeded.split("or");
+            const courseOptions: string[] = course.coursesNeeded.split(" or ");
 
             if (courseOptions.length === 1) {
+              const classTitle = courseOptions[0].split(" in ")[1];
+
               const newCategory: category = {
                 courses: [
                   {
-                    number: "FREE XXXX",
+                    number: classTitle,
                     name: course.title,
                     credits: 3,
                     completed: false,
@@ -145,6 +147,42 @@ export default function Home() {
               }
 
               courseObjects.push(newCategory);
+            } else {
+              debugger
+              const courseTitle: string[] = [];
+
+              let currPrefix: string = "";
+              for (let i = 0; i < courseOptions.length; i++) {
+                let currTitle: string = courseOptions[i].trim();
+
+                if (i == 0) {
+                  currTitle = currTitle.split(" in ")[1];
+                }
+
+                if (/^[A-Za-z]/.test(currTitle)) {
+                  currPrefix = currTitle.split(" ")[0];
+                  currTitle = currTitle.split(" ")[1];
+                }
+
+                courseTitle.push(currPrefix + " " + currTitle);
+              }
+
+              const newCategory: category = {
+                category: course.title,
+                courses: courseTitle.map((courseNumber) => {
+                  return {
+                    number: courseNumber,
+                    name: course.title,
+                    credits: 3,
+                    completed: false,
+                  }
+                }),
+                selectedCourse: 0,
+              }
+
+              for (let i = 0; i < numNeeded; i++) {
+                courseObjects.push(newCategory);
+              }
             }
           }
         }
