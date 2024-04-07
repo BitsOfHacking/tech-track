@@ -2,20 +2,21 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import parse, { HTMLElement, Node, TextNode } from "node-html-parser";
 import { CoreType, ICourse } from "@/server/db/models/Course";
+import { getReqs } from "@/server/db/actions/courses";
 
 type DegreeRequirements = {
   creditsRequired: number,
   creditsApplied: number
 }
 
-type Data = {
+export type ParsedCourseData = {
   majorRequirements: (ICourse | ICourseGroup)[],
   coreRequirements: (ICourse | ICourseGroup)[],
   electiveRequirements: (ICourse | ICourseGroup)[],
   degreeRequirements?: DegreeRequirements
 }
 
-export default function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
+export default function handler(req: NextApiRequest, res: NextApiResponse<ParsedCourseData>) {
   const root = parse(req.body.degreeAudit, {
     voidTag: {
       tags: [
@@ -122,7 +123,7 @@ function parseSection(section: Node[], defaultCoreType?: CoreType) {
   return parseCoreRequirement(section, defaultCoreType);
 }
 
-interface ICourseGroup {
+export interface ICourseGroup {
   name: string;
   courses: ICourse[];
 }
@@ -281,6 +282,7 @@ function parseCoreRequirement(
       parsedCourses.push(newCourse);
     }
   });
-
+  // getReqs(parsedCourses);
+  console.log(parsedCourses)
   return parsedCourses;
 }
