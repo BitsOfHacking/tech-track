@@ -13,6 +13,7 @@ import ReactFlowWrapper from "@/components/ReactFlowWrapper";
 
 const fontSans = FontSans({
   subsets: ["latin"],
+  variable: "--font-sans",
 });
 
 const probability: category = {
