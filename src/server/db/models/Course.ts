@@ -23,7 +23,7 @@ export interface ICourse extends Document {
     selectedCore: CoreType;
     completed: boolean;
     credits: number;
-    prereqs: String;
+    prereqs: any;
 }
 
 const CourseSchema = new Schema<ICourse>({

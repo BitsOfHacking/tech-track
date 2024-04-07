@@ -1,7 +1,7 @@
 import dbConnect from "../dbConnect";
 import Course from "../models/Course";
 import { ICourse } from "../models/Course";
-import { ICourseGroup, ParsedCourseData } from "@/pages/api/parse";
+import { ICourseGroup } from "@/pages/api/parse";
 
 export async function createCourse(course: ICourse): Promise<{
     error?: string;
@@ -72,7 +72,7 @@ export async function updateCourses(plan_id: string, newCourses: ICourse[]): Pro
     }
 }
 
-export async function getReqs(givenCourses: ParsedCourseData) {
+export async function getReqs(givenCourses: Array<ICourse | ICourseGroup>) {
     await dbConnect()
     let course_data;
     try {
@@ -81,32 +81,17 @@ export async function getReqs(givenCourses: ParsedCourseData) {
     } catch (error: any) {
         return { error: error.message };
     }
-    const coreReqs = givenCourses.coreRequirements
-    const majorReqs = givenCourses.majorRequirements
-    const electiveReqs = givenCourses.electiveRequirements
-    for (let i = 0; i < coreReqs.length; i++) {
-        const course = givenCourses.coreRequirements[i]
+    for (let i = 0; i < givenCourses.length; i++) {
+        const course = givenCourses[i]
         if (course?.name) {
             // skip course groups
             continue
         }
-        givenCourses.coreRequirements[i].prereqs = JSON.stringify(course_data[`${course.topic} ${course.number}`][2])
-    }
-    for (let i = 0; i < majorReqs.length; i++) {
-        const course = givenCourses.coreRequirements[i]
-        if (course?.name) {
-            // skip course groups
+        const index = `${course.topic} ${course.number}`
+        if (!course_data.courses[index]) {
             continue
         }
-        givenCourses.coreRequirements[i].prereqs = JSON.stringify(course_data[`${course.topic} ${course.number}`][2])
-    }
-    for (let i = 0; i < electiveReqs.length; i++) {
-        const course = givenCourses.coreRequirements[i]
-        if (course?.name) {
-            // skip course groups
-            continue
-        }
-        givenCourses.coreRequirements[i].prereqs = JSON.stringify(course_data[`${course.topic} ${course.number}`][2])
+        givenCourses[i].prereqs = course_data.courses[index][2]
     }
     return givenCourses;
 }
