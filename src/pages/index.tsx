@@ -161,7 +161,6 @@ export default function Home() {
           />
         </Modal>
       )}
-      <ReactFlowWrapper />
       <Sidebar courses={courses} />
       {/* <Semester title={"Fall 24"} courses={courses} />
       <Semester title={"Spring 24"} courses={courses} />
