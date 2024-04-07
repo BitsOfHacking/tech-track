@@ -23,8 +23,7 @@ export interface ICourse extends Document {
     selectedCore: CoreType;
     completed: boolean;
     credits: number;
-    prereqs: Types.DocumentArray<ICourse>;
-    coreqs: Types.DocumentArray<ICourse>;
+    prereqs: String;
 }
 
 const CourseSchema = new Schema<ICourse>({
@@ -63,10 +62,7 @@ const CourseSchema = new Schema<ICourse>({
         required: [true, "Please provide credits for this course."],
     },
     prereqs: {
-        type: [Schema.Types.ObjectId],
-    },
-    coreqs: {
-        type: [Schema.Types.ObjectId],
+        type: String,
     },
 });
 
