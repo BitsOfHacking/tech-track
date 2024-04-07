@@ -184,7 +184,7 @@ function parseCoreRequirement(
     let completed = false;
 
     if (labelNode && labelNode.textContent) {
-      completed = labelNode.textContent?.includes("is complete");
+      completed = labelNode.textContent?.includes("is complete") || labelNode.textContent?.includes("in-progress");
     } else {
       if (!label) {
         if (currentGroup === null) return;
