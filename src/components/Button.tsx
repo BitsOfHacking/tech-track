@@ -5,15 +5,15 @@ interface ButtonProps {
   text?: string;
   onClick: (...args: any[]) => any;
   className?: string;
+  disabled?: boolean;
 }
 
-export default function Button({ type, text, onClick, className }: ButtonProps) {
+export default function Button({ type, text, onClick, className, disabled }: ButtonProps) {
   return (
     <button
-      className={`
-        ${type === "primary" ? "bg-primary-button" : "bg-secondary-button"}
-        ${className} border rounded-[10px] px-4 py-2`}
+      className={`${ disabled ? "bg-secondary-color text-modal-veil" : "bg-primary-button text-white"} ${className} border rounded-[10px] px-4 py-2`}
       onClick={onClick}
+      disabled={disabled}
     >
       {type === "plus" ? 
         <div className="h-4 w-4"><PlusIcon /></div>

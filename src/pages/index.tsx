@@ -245,7 +245,6 @@ export default function Home() {
       }
     }
 
-    // console.log([ ...takenClasses, ...courseObjects ]);
     setCourseNodes(() => { return [ ...takenClasses, ...courseObjects ] });
   }, [ parsedCourses ]);
 
@@ -305,7 +304,8 @@ export default function Home() {
             <Button
               type="Primary"
               text="Submit"
-              className="bg-[#748bf1] mt-4 px-8 rounded-lg text-white"
+              className="bg-[#748bf1] mt-4 px-8 rounded-lg"
+              disabled={degreeAudit === ""}
               onClick={() => {
                 fetch("/api/parse", {
                   method: "POST",

@@ -62,7 +62,7 @@ const config = {
         "secondary-text": "#c2c4cc",
         "modal-veil": "#5A5A5A",
         "modal-background": "#D4E0F0",
-        "primary-button": "#FFF000",
+        "primary-button": "#748BF1",
         "secondary-button": "#CCF0F0",
         "semester-header-background": "#748bf1",
       },
