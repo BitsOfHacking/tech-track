@@ -5,18 +5,21 @@ import { CoreType, ICourse } from "@/server/db/models/Course";
 import { getReqs } from "@/server/db/actions/courses";
 
 type DegreeRequirements = {
-  creditsRequired: number,
-  creditsApplied: number
-}
+  creditsRequired: number;
+  creditsApplied: number;
+};
 
 export type ParsedCourseData = {
-  majorRequirements: (ICourse | ICourseGroup)[],
-  coreRequirements: (ICourse | ICourseGroup)[],
-  electiveRequirements: (ICourse | ICourseGroup)[],
-  degreeRequirements?: DegreeRequirements
-}
+  majorRequirements: (ICourse | ICourseGroup)[];
+  coreRequirements: (ICourse | ICourseGroup)[];
+  electiveRequirements: (ICourse | ICourseGroup)[];
+  degreeRequirements?: DegreeRequirements;
+};
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<ParsedCourseData>) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse<ParsedCourseData>
+) {
   const root = parse(req.body.degreeAudit, {
     voidTag: {
       tags: [
@@ -61,8 +64,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         let name =
           childNode.childNodes[0].parentNode.querySelector("h2")?.firstChild
             ?.innerText;
-        const table =
-          childNode.childNodes[0].parentNode.querySelector("table");
+        const table = childNode.childNodes[0].parentNode.querySelector("table");
 
         // Filter name
         if (name !== undefined) {
@@ -87,33 +89,31 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
             sections[name as string] = parseDegreeRequirement(childNode);
           } else {
             sections[name as string] = properties;
-
           }
-
         }
       }
     });
 
-    const majorRequirements = await parseSection(
-      sections["major-requirements"],
-      CoreType.MAJOR_REQUIREMENTS
-    );
-    const coreRequirements = await parseSection(sections["core-requirements"]);
-    const electives = await parseSection(
-      sections["electives"],
-      CoreType.MAJOR_ELECTIVES
-    );
+  const majorRequirements = await parseSection(
+    sections["major-requirements"],
+    CoreType.MAJOR_REQUIREMENTS
+  );
+  const coreRequirements = await parseSection(sections["core-requirements"]);
+  const electives = await parseSection(
+    sections["electives"],
+    CoreType.MAJOR_ELECTIVES
+  );
 
-    if (sections["core-requirements"]) {
-      res.status(200).json({
-        majorRequirements: majorRequirements,
-        coreRequirements: coreRequirements,
-        electiveRequirements: electives,
-        degreeRequirements: sections["degree-requirements"] || null
-      });
-    } else {
-      res.status(400);
-    }
+  if (sections["core-requirements"]) {
+    res.status(200).json({
+      majorRequirements: majorRequirements,
+      coreRequirements: coreRequirements,
+      electiveRequirements: electives,
+      degreeRequirements: sections["degree-requirements"] || null,
+    });
+  } else {
+    res.status(400);
+  }
   // });
 }
 
@@ -131,18 +131,23 @@ export interface ICourseGroup {
 
 function parseDegreeRequirement(childNode: Node) {
   if (childNode instanceof HTMLElement) {
-    const creditContainer = childNode.childNodes[0].childNodes[0].childNodes[0].childNodes[0].childNodes[0];
+    const creditContainer =
+      childNode.childNodes[0].childNodes[0].childNodes[0].childNodes[0]
+        .childNodes[0];
 
-    const creditsRequired = parseInt(creditContainer.childNodes[3].textContent.split(":")[1].trim());
-    const creditsApplied = parseInt(creditContainer.childNodes[4].textContent.split(":")[1].trim());
+    const creditsRequired = parseInt(
+      creditContainer.childNodes[3].textContent.split(":")[1].trim()
+    );
+    const creditsApplied = parseInt(
+      creditContainer.childNodes[4].textContent.split(":")[1].trim()
+    );
 
     return {
       creditsRequired,
-      creditsApplied
-    }
+      creditsApplied,
+    };
   }
 }
-
 
 function parseCoreRequirement(
   coreRequirementList: Node[],
@@ -158,6 +163,8 @@ function parseCoreRequirement(
   let currentCoreType = defaultCoreType;
 
   coreRequirementList.forEach((node, index) => {
+    debugger
+
     const labelNode =
       node?.childNodes[0]?.childNodes[0]?.childNodes[1]?.childNodes[0];
 
@@ -186,10 +193,18 @@ function parseCoreRequirement(
     let completed = false;
 
     if (labelNode && labelNode.textContent) {
-      completed = labelNode.textContent?.includes("is complete") || labelNode.textContent?.includes("in-progress");
+      completed =
+        labelNode.textContent?.includes("is complete") ||
+        labelNode.textContent?.includes("in-progress");
     } else {
       if (!label) {
         if (currentGroup === null) return;
+      }
+    }
+
+    if (currentGroup !== undefined) {
+      if (currentGroup?.courses[0]) {
+        completed = currentGroup.courses[0].completed;
       }
     }
 
