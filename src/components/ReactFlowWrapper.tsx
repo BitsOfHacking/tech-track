@@ -70,7 +70,7 @@ export default function ReactFlowWrapper({ courses }: Props) {
               data: { searchData: searchData, category: course },
               position: {
                 x: course.semesterIndex * 200,
-                y: course.semesterIndex != 0 ? ((index % 5) * 100) + 100 : (index * 75) + 75
+                y: course.semesterIndex != 0 ? ((index % 5) * 100) + 100 : (index * 75) + 100
               },
             };
           });
